@@ -1,0 +1,30 @@
+{
+  "name": "pino-devtools",
+  "version": "1.0.0",
+  "description": "A transport for viewing the logs in your favorite browser devtools",
+  "main": "index.js",
+  "bin": {
+    "pino-devtools": "./index.js"
+  },
+  "scripts": {
+    "prettier": "prettier --write '**'",
+    "test": "jest"
+  },
+  "author": "Mozilla Add-ons Team",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "opn": "^5.3.0",
+    "pump": "^3.0.0",
+    "split2": "^2.2.0",
+    "through2": "^2.0.3",
+    "ws": "^6.0.0"
+  },
+  "devDependencies": {
+    "jest": "^23.4.2",
+    "prettier": "^1.14.0"
+  },
+  "jest": {
+    "testURL": "http://localhost/"
+  }
+}

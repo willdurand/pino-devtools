@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>pino-devtools</title>
+    <style>
+      body {
+        background-color: #f9f9f9;
+        color: #4a4a4a;
+        margin: auto;
+        max-width: 38em;
+        padding: 13px;
+      }
+
+      h1, h2, h3 {
+        font-family: Verdana, Geneva, sans-serif;
+        font-weight: 600;
+        line-height: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🌲 pino-devtools</h1>
+    <h3>Open the developer tools to view the logs in the console.</h3>
+    <script>
+      const { hostname, port } = window.location;
+      const wsPort = parseInt(port, 10) + 1;
+
+      const socket = new WebSocket(`ws://${hostname}:${wsPort}`);
+
+      const logger = {
+        10: console.trace,
+        20: console.debug,
+        30: console.info,
+        40: console.warn,
+        50: console.error,
+        60: console.error,
+      };
+
+      socket.addEventListener('message', ({ data }) => {
+        try {
+          const {
+            hostname,
+            level,
+            msg,
+            name,
+            pid,
+            time,
+            v,
+            ...otherFields
+          } = JSON.parse(data);
+
+          const context = Object.keys(otherFields).length ? otherFields : '';
+          logger[level](`[${name}] ${msg || '<no message>'}`, context);
+        } catch (err) {
+          console.debug('[pino-devtools] received non-JSON message:', data);
+        }
+      });
+    </script>
+  </body>
+</html>
