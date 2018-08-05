@@ -1,5 +1,7 @@
 # pino-devtools
 
+[![Build Status](https://travis-ci.org/willdurand/pino-devtools.svg?branch=master)](https://travis-ci.org/willdurand/pino-devtools)
+
 A transport for viewing logs in your favorite browser devtools!
 
 <p align="center"><img src="./docs/screenshot-1.png"></p>
