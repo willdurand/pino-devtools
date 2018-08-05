@@ -3,6 +3,7 @@
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
+const { parse: parseURL } = require('url');
 
 const WebSocket = require('ws');
 const opn = require('opn');
@@ -12,10 +13,11 @@ const through = require('through2');
 
 const { parseOptions } = require('./src/utils');
 const indexHTML = fs.readFileSync(path.join(__dirname, 'src', 'index.html'));
+const clientJS = fs.readFileSync(path.join(__dirname, 'src', 'client.js'));
 
 const DEFAULT_OPTIONS = {
   host: '127.0.0.1',
-  open: true,
+  noOpen: false,
   port: '3010',
 };
 
@@ -28,13 +30,23 @@ const createTransformFunction = ({ options, wsServer }) => {
 
 if (require.main === module) {
   const options = parseOptions(process.argv.slice(2), DEFAULT_OPTIONS);
-  const { host, port, open } = options;
+  const { host, port, noOpen } = options;
 
   const httpPort = parseInt(port, 10) || parseInt(DEFAULT_OPTIONS.port, 10);
   const wsPort = httpPort + 1;
   const url = `http://${host}:${httpPort}/`;
 
   const server = http.createServer((req, res) => {
+    let pathName = null;
+    try {
+      pathName = parseURL(req.url).pathname;
+    } catch (e) {}
+
+    if (pathName === '/client.js') {
+      res.writeHead(200, { 'Content-Type': 'text/javascript' });
+      return res.end(clientJS);
+    }
+
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(indexHTML);
   });
@@ -64,10 +76,10 @@ if (require.main === module) {
 
       pump(process.stdin, split(), devtoolsTransport);
 
-      if (open) {
-        opn(url);
-      } else {
+      if (noOpen) {
         console.log(`Open your browser at: ${url}`);
+      } else {
+        opn(url);
       }
     }
   );
