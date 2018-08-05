@@ -15,7 +15,7 @@ const clientJS = fs.readFileSync(path.join(__dirname, 'client.js'));
 
 const DEFAULT_OPTIONS = {
   host: '127.0.0.1',
-  noOpen: false,
+  open: true,
   port: '3010',
 };
 
@@ -28,7 +28,7 @@ const createTransformFunction = ({ options, wsServer }) => {
 
 module.exports = () => {
   const options = parseOptions(process.argv.slice(2), DEFAULT_OPTIONS);
-  const { host, port, noOpen } = options;
+  const { host, port, open } = options;
 
   const httpPort = parseInt(port, 10) || parseInt(DEFAULT_OPTIONS.port, 10);
   const wsPort = httpPort + 1;
@@ -74,10 +74,10 @@ module.exports = () => {
 
       pump(process.stdin, split(), devtoolsTransport);
 
-      if (noOpen) {
-        console.log(`Open your browser at: ${url}`);
-      } else {
+      if (open) {
         opn(url);
+      } else {
+        console.log(`Open your browser at: ${url}`);
       }
     }
   );

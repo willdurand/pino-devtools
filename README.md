@@ -14,13 +14,13 @@ Given an application `your-app.js` that logs via [pino](https://www.npmjs.com/pa
 $ node your-app.js | pino-devtools
 ```
 
-`pino-devtools` automatically opens a page in your default browser (unless `--noOpen` is supplied). Open the devtools and you will see the logs coming from your application into the console tab.
+`pino-devtools` automatically opens a page in your default browser (unless `--no-open` is supplied). Open the devtools and you will see the logs coming from your application into the console tab.
 
 ### Options
 
 - `--host 127.0.0.1`: the host for the HTTP and web socket servers
 - `--port 3010`: the HTTP server port
-- `--noOpen`: do not automatically open the page in the browser
+- `--no-open`: do not automatically open the page in the browser
 
 Note: the web socket port is `port + 1`.
 
