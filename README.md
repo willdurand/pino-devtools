@@ -4,7 +4,13 @@
 
 A transport for viewing logs in your favorite browser devtools!
 
-<p align="center"><img src="./docs/screenshot-1.png"></p>
+<p align="center"><img src="docs/screenshot-1.png" alt="screenshot"></p>
+
+## Installation
+
+```
+$ npm i pino-devtools
+```
 
 ## Usage
 
