@@ -1,13 +1,13 @@
 {
   "name": "pino-devtools",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A transport for viewing the logs in your favorite browser devtools",
   "main": "index.js",
   "bin": {
     "pino-devtools": "./index.js"
   },
   "scripts": {
-    "build": "rimraf dist/ && babel -d dist/src/ -D --ignore src/client.js src/ && cp src/client.js dist/src/client.js && cp -r ./{index.js,LICENSE.txt,README.md,package.json,docs/} dist/",
+    "build": "rimraf dist/ && babel -d dist/src/ -D --ignore src/client.js src/ && cp src/client.js dist/src/client.js && cp -r index.js LICENSE.txt README.md package.json docs/ dist/" ,
     "prettier": "prettier --write '**'",
     "test": "jest"
   },
