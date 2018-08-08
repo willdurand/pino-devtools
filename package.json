@@ -7,7 +7,7 @@
     "pino-devtools": "./index.js"
   },
   "scripts": {
-    "build": "rimraf dist/ && babel -d dist/src/ -D --ignore src/client.js src/ && cp src/client.js dist/src/client.js && cp -r index.js LICENSE.txt README.md package.json docs/ dist/" ,
+    "build": "rimraf dist/ && babel src/ --env server -d dist/src/ --ignore src/client.js --copy-files && babel index.js --env server -d dist/ && babel --env client src/client.js -d dist/ && cp -r LICENSE.txt README.md package.json docs/ dist/",
     "prettier": "prettier --write '**'",
     "test": "jest"
   },
