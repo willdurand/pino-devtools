@@ -13,41 +13,99 @@ const { parseOptions } = require('./utils');
 const indexHTML = fs.readFileSync(path.join(__dirname, 'index.html'));
 const clientJS = fs.readFileSync(path.join(__dirname, 'client.js'));
 
+const MODE_BUFFER = 'buffer';
+const MODE_WEBSOCKET = 'websocket';
+const MODES = [MODE_BUFFER, MODE_WEBSOCKET];
+
 const DEFAULT_OPTIONS = {
   host: '127.0.0.1',
-  open: true,
   port: '3010',
+  mode: MODE_WEBSOCKET,
+  open: true,
 };
 
-const createTransformFunction = ({ options, wsServer }) => {
+let BUFFER = {
+  logs: [],
+  prefix: 'server',
+};
+
+const createWebSocketTransformFunction = ({ options, wsServer }) => {
   return (record, enc, cb) => {
     wsServer.broadcast(record);
     cb();
   };
 };
 
+const webSocketHandler = (req, res) => {
+  let pathName = null;
+  try {
+    pathName = parseURL(req.url).pathname;
+  } catch (e) {}
+
+  if (pathName === '/client.js') {
+    res.writeHead(200, { 'Content-Type': 'text/javascript' });
+    return res.end(clientJS);
+  }
+
+  res.writeHead(200, { 'Content-Type': 'text/html' });
+  res.end(indexHTML);
+};
+
+const createBufferTransformFunction = ({ options }) => {
+  return (record, enc, cb) => {
+    BUFFER = {
+      ...BUFFER,
+      logs: BUFFER.logs.concat(record),
+    };
+    cb();
+  };
+};
+
+const bufferHandler = (req, res) => {
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+  };
+
+  let pathName = null;
+  try {
+    pathName = parseURL(req.url).pathname;
+  } catch (e) {}
+
+  if (pathName !== '/server-logs.json') {
+    res.writeHead(404, headers);
+    return res.end();
+  }
+
+  const json = JSON.stringify(BUFFER);
+  headers['Content-Type'] = 'application/json';
+
+  // reset buffer once returned.
+  BUFFER = {
+    ...BUFFER,
+    logs: [],
+  };
+
+  res.writeHead(200, headers);
+  return res.end(json);
+};
+
 module.exports = () => {
   const options = parseOptions(process.argv.slice(2), DEFAULT_OPTIONS);
-  const { host, port, open } = options;
+  const { host, mode, port, open } = options;
+
+  if (!MODES.includes(mode)) {
+    console.error(`Invalid mode: "${mode}", choices: ${MODES.join(', ')}`);
+    process.exit(1);
+  }
+
+  let server;
+  if (mode === MODE_BUFFER) {
+    server = http.createServer(bufferHandler);
+  } else {
+    server = http.createServer(webSocketHandler);
+  }
 
   const httpPort = parseInt(port, 10) || parseInt(DEFAULT_OPTIONS.port, 10);
-  const wsPort = httpPort + 1;
-  const url = `http://${host}:${httpPort}/`;
-
-  const server = http.createServer((req, res) => {
-    let pathName = null;
-    try {
-      pathName = parseURL(req.url).pathname;
-    } catch (e) {}
-
-    if (pathName === '/client.js') {
-      res.writeHead(200, { 'Content-Type': 'text/javascript' });
-      return res.end(clientJS);
-    }
-
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(indexHTML);
-  });
 
   server.listen(
     {
@@ -55,30 +113,35 @@ module.exports = () => {
       host,
     },
     (err) => {
-      const wsServer = new WebSocket.Server({
-        host: host,
-        port: wsPort,
-      });
-
-      wsServer.broadcast = (data) => {
-        wsServer.clients.forEach((client) => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(data);
-          }
+      let transport;
+      if (mode === MODE_WEBSOCKET) {
+        const url = `http://${host}:${httpPort}/`;
+        const wsPort = httpPort + 1;
+        const wsServer = new WebSocket.Server({
+          host: host,
+          port: wsPort,
         });
-      };
 
-      const devtoolsTransport = through.obj(
-        createTransformFunction({ options, wsServer })
-      );
+        wsServer.broadcast = (data) => {
+          wsServer.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(data);
+            }
+          });
+        };
 
-      pump(process.stdin, split(), devtoolsTransport);
+        transport = createWebSocketTransformFunction({ options, wsServer });
 
-      if (open) {
-        opn(url);
+        if (open) {
+          opn(url);
+        } else {
+          console.log(`Open your browser at: ${url}`);
+        }
       } else {
-        console.log(`Open your browser at: ${url}`);
+        transport = createBufferTransformFunction({ options });
       }
+
+      pump(process.stdin, split(), through.obj(transport));
     }
   );
 };

@@ -27,10 +27,12 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "jest": "^23.4.2",
+    "jest-fetch-mock": "^1.6.5",
     "prettier": "^1.14.0",
     "rimraf": "^2.6.2"
   },
   "jest": {
+    "setupTestFrameworkScriptFile": "<rootDir>/setupTests.js",
     "testURL": "http://localhost/"
   }
 }
