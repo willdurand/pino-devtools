@@ -5,14 +5,9 @@ node_js:
 
 jobs:
   include:
-    - node_js: "6"
-      if: tag IS blank
-      script: npm run build
-      before_install:
-        - npm install -g npm@latest
     - stage: npm release
       if: tag IS present
-      node_js: "6"
+      node_js: "8"
       script: npm run build
       before_install:
         - npm install -g npm@latest
