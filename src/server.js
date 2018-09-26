@@ -19,9 +19,10 @@ const MODES = [MODE_BUFFER, MODE_WEBSOCKET];
 
 const DEFAULT_OPTIONS = {
   host: '127.0.0.1',
-  port: '3010',
   mode: MODE_WEBSOCKET,
   open: true,
+  port: '3010',
+  tee: false,
 };
 
 let BUFFER = {
@@ -31,6 +32,10 @@ let BUFFER = {
 
 const createWebSocketTransformFunction = ({ options, wsServer }) => {
   return (record, enc, cb) => {
+    if (options.tee) {
+      console.log(record);
+    }
+
     wsServer.broadcast(record);
     cb();
   };
@@ -53,6 +58,10 @@ const webSocketHandler = (req, res) => {
 
 const createBufferTransformFunction = ({ options }) => {
   return (record, enc, cb) => {
+    if (options.tee) {
+      console.log(record);
+    }
+
     BUFFER = {
       ...BUFFER,
       logs: BUFFER.logs.concat(record),

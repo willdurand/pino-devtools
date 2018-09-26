@@ -28,6 +28,7 @@ $ node your-app.js | pino-devtools
 - `--port 3010`: the HTTP server port
 - `--no-open`: do not automatically open the page in the browser
 - `--mode websocket`: the server mode, more information in the next section
+- `--tee`: also send the logs to `stdout`
 
 Note: the web socket port is `port + 1`.
 
