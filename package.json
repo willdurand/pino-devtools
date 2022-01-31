@@ -20,7 +20,7 @@
     "pump": "^3.0.0",
     "split2": "^2.2.0",
     "through2": "^2.0.3",
-    "ws": "^6.0.0"
+    "ws": "^8.4.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
