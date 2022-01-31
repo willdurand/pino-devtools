@@ -1,6 +1,6 @@
 # pino-devtools
 
-[![Build Status](https://travis-ci.org/willdurand/pino-devtools.svg?branch=master)](https://travis-ci.org/willdurand/pino-devtools)
+[![GitHub Actions](https://github.com/willdurand/pino-devtools/workflows/ci/badge.svg)](https://github.com/willdurand/pino-devtools/actions?query=workflow%3A%22ci%22+branch%3Amaster)
 
 A transport for viewing logs in your favorite browser devtools!
 
