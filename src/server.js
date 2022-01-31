@@ -4,7 +4,7 @@ const path = require('path');
 const { parse: parseURL } = require('url');
 
 const WebSocket = require('ws');
-const opn = require('opn');
+const open = require('open');
 const pump = require('pump');
 const split = require('split2');
 const through = require('through2');
@@ -142,7 +142,7 @@ module.exports = () => {
         transport = createWebSocketTransformFunction({ options, wsServer });
 
         if (open) {
-          opn(url);
+          open(url);
         } else {
           console.log(`Open your browser at: ${url}`);
         }
