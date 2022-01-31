@@ -16,7 +16,7 @@
   "repository": "github:willdurand/pino-devtools",
   "dependencies": {
     "minimist": "^1.2.0",
-    "opn": "^6.0.0",
+    "open": "^6.0.0",
     "pump": "^3.0.0",
     "split2": "^4.1.0",
     "through2": "^2.0.3",
