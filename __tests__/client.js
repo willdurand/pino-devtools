@@ -197,7 +197,7 @@ describe(__filename, () => {
           '[pino-devtools] error while fetching the logs:',
           {
             error:
-              'FetchError: invalid json response body at undefined reason: ' +
+              'FetchError: invalid json response body at  reason: ' +
               'Unexpected end of JSON input',
           }
         );
