@@ -32,7 +32,10 @@
     "rimraf": "^3.0.2"
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "<rootDir>/setupTests.js",
-    "testURL": "http://localhost/"
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupTests.js"
+    ],
+    "testURL": "http://localhost/",
+    "testEnvironment": "jsdom"
   }
 }
