@@ -40,5 +40,8 @@
     "testEnvironmentOptions": {
       "url": "http://localhost/"
     }
+  },
+  "optionalDependencies": {
+    "fsevents": "2.3.2"
   }
 }
