@@ -26,7 +26,8 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "jest": "^27.4.7",
+    "jest": "^28.0.2",
+    "jest-environment-jsdom": "28.0.2",
     "jest-fetch-mock": "^3.0.3",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2"
@@ -35,7 +36,9 @@
     "setupFilesAfterEnv": [
       "<rootDir>/setupTests.js"
     ],
-    "testURL": "http://localhost/",
-    "testEnvironment": "jsdom"
+    "testEnvironment": "jsdom",
+    "testEnvironmentOptions": {
+      "url": "http://localhost/"
+    }
   }
 }
